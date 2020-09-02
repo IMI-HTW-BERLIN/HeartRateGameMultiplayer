@@ -1,0 +1,78 @@
+{
+    "name": "InputActionsPlayerOne",
+    "maps": [
+        {
+            "name": "GamePlay",
+            "id": "ea2e075b-b2fd-4481-88ee-e6088301ecde",
+            "actions": [
+                {
+                    "name": "Movement",
+                    "type": "Button",
+                    "id": "29c742e8-46aa-4d38-8606-ec84862c3344",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "UpDown",
+                    "id": "eaa9cca5-53bc-42ef-a660-6154292a8534",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "WS",
+                    "id": "4cd9bea8-13f2-448e-af91-492a9b5b0966",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "positive",
+                    "id": "172feec2-1b14-43de-8963-66a5e6c676a0",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "WASD",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "negative",
+                    "id": "48d2672b-ecc1-401b-8a00-5cf586395753",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "WASD",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "WASD",
+            "bindingGroup": "WASD",
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}
