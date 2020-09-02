@@ -1,4 +1,3 @@
 [submodule "MiBand2DLL"]
-    branch = MultipleDevices
 	path = MiBand2DLL
 	url = https://github.com/DavidPgl/MiBand2DLL
