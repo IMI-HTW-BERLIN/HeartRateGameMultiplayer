@@ -1,3 +1,4 @@
 [submodule "MiBand2DLL"]
 	path = MiBand2DLL
 	url = https://github.com/DavidPgl/MiBand2DLL
+	branch = master
