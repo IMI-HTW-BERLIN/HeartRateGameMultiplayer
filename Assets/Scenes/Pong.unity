@@ -1220,7 +1220,7 @@ RectTransform:
   m_Father: {fileID: 19482940}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.98}
+  m_AnchorMin: {x: 0, y: 0.97}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
@@ -1249,7 +1249,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1920, y: 16}
+  m_Size: {x: 1920, y: 24}
   m_EdgeRadius: 0
 --- !u!114 &957034092
 MonoBehaviour:
@@ -1711,7 +1711,7 @@ RectTransform:
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.02}
+  m_AnchorMax: {x: 1, y: 0.03}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1739,7 +1739,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1920, y: 16}
+  m_Size: {x: 1920, y: 24}
   m_EdgeRadius: 0
 --- !u!114 &1989956791
 MonoBehaviour:
