@@ -29,6 +29,11 @@ namespace Managers
         /// </summary>
         public static event Action<bool> OnDeviceConnectionChange;
 
+        /// <summary>
+        /// The number of currently connected bands.
+        /// </summary>
+        public int ConnectedBands => _miBands.Count;
+
 
         /// <summary>
         /// The Client-Reference of the Tcp-connection between the local server and this object.
@@ -78,11 +83,13 @@ namespace Managers
         /// <param name="deviceIndex">The device index of the device which to connect to.</param>
         public IEnumerator ConnectToBand(int deviceIndex)
         {
+            _miBands.Add(new MiBand {ServerResponseReceived = true});
+            MiBand band = _miBands[deviceIndex];
             SendCommand(deviceIndex, Consts.Command.ConnectBand);
-            yield return new WaitUntil(() => _miBands[deviceIndex].ServerResponseReceived);
+            yield return new WaitUntil(() => band.ServerResponseReceived);
             SendCommand(deviceIndex, Consts.Command.AuthenticateBand);
-            yield return new WaitUntil(() => _miBands[deviceIndex].ServerResponseReceived);
-            _miBands.Add(new MiBand());
+            yield return new WaitUntil(() => band.ServerResponseReceived);
+            HeartRateManager.Instance.AddPlayer();
         }
 
         /// <summary>
@@ -91,11 +98,12 @@ namespace Managers
         /// <param name="deviceIndex">The devices index of the device.</param>
         public IEnumerator StartMeasurement(int deviceIndex)
         {
+            MiBand band = _miBands[deviceIndex];
             SendCommand(deviceIndex, Consts.Command.SubscribeToHeartRateChange);
-            yield return new WaitUntil(() => _miBands[deviceIndex].ServerResponseReceived);
+            yield return new WaitUntil(() => band.ServerResponseReceived);
             SendCommand(deviceIndex, Consts.Command.StartMeasurement);
-            yield return new WaitUntil(() => _miBands[deviceIndex].ServerResponseReceived);
-            _miBands[deviceIndex].SetIsMeasuring(true);
+            yield return new WaitUntil(() => band.ServerResponseReceived);
+            band.IsMeasuring = true;
         }
 
         /// <summary>
@@ -145,9 +153,10 @@ namespace Managers
         /// <param name="command">The command for the server.</param>
         private void SendCommand(int deviceIndex, Consts.Command command)
         {
-            if (!_miBands[deviceIndex].ServerResponseReceived)
+            MiBand band = _miBands[deviceIndex];
+            if (!band.ServerResponseReceived)
                 return;
-            _miBands[deviceIndex].SetServerResponseReceived(false);
+            band.ServerResponseReceived = false;
             _writer.WriteServerCommand(new ServerCommand(deviceIndex, command));
         }
 
@@ -160,22 +169,24 @@ namespace Managers
             Task<string> task = _reader.ReadStringAsync();
             yield return new WaitUntil(() => task.IsCompleted);
             ServerResponse response = ServerResponse.FromJson(task.Result);
-
             switch (response.Data)
             {
                 case SuccessResponse successResponse:
-                    _miBands[successResponse.DeviceIndex].SetServerResponseReceived(true);
+                    MiBand band = _miBands[successResponse.DeviceIndex];
+                    band.ServerResponseReceived = true;
                     break;
                 case Exception exception:
                     throw exception;
                 case HeartRateResponse heartRateResponse:
-                    MiBand band = _miBands[heartRateResponse.DeviceIndex];
+                    band = _miBands[heartRateResponse.DeviceIndex];
                     // If last two measurements were zero, restart.
-                    if (heartRateResponse.HeartRate == 0)
+                    if (heartRateResponse.IsRepeating)
                     {
-                        if (band.LastHeartRateWasZero)
+                        if (!band.IsRestarting)
+                        {
+                            band.IsRestarting = true;
                             StartCoroutine(RestartMeasurement(heartRateResponse.DeviceIndex));
-                        band.LastHeartRateWasZero = true;
+                        }
                     }
 
                     OnHeartRateChange?.Invoke(heartRateResponse);
@@ -194,16 +205,18 @@ namespace Managers
         /// <param name="deviceIndex">The device index of the device which should restart the measurement.</param>
         private IEnumerator RestartMeasurement(int deviceIndex)
         {
+            MiBand band = _miBands[deviceIndex];
             SendCommand(deviceIndex, Consts.Command.StopMeasurement);
-            yield return new WaitUntil(() => _miBands[deviceIndex].ServerResponseReceived);
+            yield return new WaitUntil(() => band.ServerResponseReceived);
             SendCommand(deviceIndex, Consts.Command.StartMeasurement);
-            yield return new WaitUntil(() => _miBands[deviceIndex].ServerResponseReceived);
+            yield return new WaitUntil(() => band.ServerResponseReceived);
+            band.IsRestarting = false;
         }
 
         /// <summary>
         /// Small struct for keeping track of data related to the miband device and it's communication.
         /// </summary>
-        private struct MiBand
+        private class MiBand
         {
             /// <summary>
             /// Whether a response was received after the last command for this device was sent.
@@ -216,12 +229,9 @@ namespace Managers
             public bool IsMeasuring;
 
             /// <summary>
-            /// Whether the last heart rate that was measured was zero. Used for restarting.
+            /// Whether we requested a restart for the measurement.
             /// </summary>
-            public bool LastHeartRateWasZero;
-
-            public void SetIsMeasuring(bool isMeasuring) => IsMeasuring = isMeasuring;
-            public void SetServerResponseReceived(bool received) => ServerResponseReceived = received;
+            public bool IsRestarting;
         }
     }
 }

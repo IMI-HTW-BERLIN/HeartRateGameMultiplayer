@@ -129,10 +129,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cf36dc14da1a8947a34027ca4582387, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerIndex: 0
   movementSpeed: 1000
   playerInput: {fileID: 5713283820107564989}
   parentRectTransform: {fileID: 0}
   hitDirectionChangeMax: 0.8
+  uiScaler: {fileID: 5713283820107564978}
 --- !u!114 &5713283820107564989
 MonoBehaviour:
   m_ObjectHideFlags: 0

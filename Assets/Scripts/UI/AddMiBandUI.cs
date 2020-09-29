@@ -10,7 +10,6 @@ namespace UI
     /// </summary>
     public class AddMiBandUI : MonoBehaviour
     {
-        [SerializeField] private int playerIndex;
         [SerializeField] private Button btnAddMiBand;
         [SerializeField] private GameObject addMiBandContent;
         [SerializeField] private GameObject connectingMiBandContent;
@@ -24,10 +23,10 @@ namespace UI
         {
             addMiBandContent.SetActive(false);
             connectingMiBandContent.SetActive(true);
-            yield return MiBandManager.Instance.ConnectToBand(playerIndex);
+            yield return MiBandManager.Instance.ConnectToBand(MiBandManager.Instance.ConnectedBands);
             connectingMiBandContent.SetActive(false);
             connectedMiBandContent.SetActive(true);
-            yield return MiBandManager.Instance.StartMeasurement(playerIndex);
+            yield return MiBandManager.Instance.StartMeasurement(MiBandManager.Instance.ConnectedBands - 1);
         }
     }
 }

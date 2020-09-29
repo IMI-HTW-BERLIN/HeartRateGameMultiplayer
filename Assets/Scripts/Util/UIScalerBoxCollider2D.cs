@@ -6,14 +6,20 @@ namespace Util
     [RequireComponent(typeof(BoxCollider2D))]
     public class UIScalerBoxCollider2D : MonoBehaviour
     {
-        private void Awake() => ScaleBoxCollider();
+        private BoxCollider2D _boxCollider2D;
+        private void Awake()
+        {
+            _boxCollider2D = GetComponent<BoxCollider2D>();
+            ScaleBoxCollider();
+        }
 
         public void ScaleBoxCollider()
         {
-            BoxCollider2D boxCollider2D = GetComponent<BoxCollider2D>();
+            if (_boxCollider2D == null)
+                _boxCollider2D = GetComponent<BoxCollider2D>();
             RectTransform rectTransform = (RectTransform) transform;
-            boxCollider2D.size = rectTransform.rect.size;
-            boxCollider2D.offset = (new Vector2(0.5f, 0.5f) - rectTransform.pivot) * rectTransform.rect.size;
+            _boxCollider2D.size = rectTransform.rect.size;
+            _boxCollider2D.offset = (new Vector2(0.5f, 0.5f) - rectTransform.pivot) * rectTransform.rect.size;
         }
     }
 }

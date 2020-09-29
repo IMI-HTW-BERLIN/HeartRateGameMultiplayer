@@ -26,7 +26,7 @@ namespace UI
             if(heartRateResponse.DeviceIndex != playerIndex)
                 return;
             
-            txtHeartRate.SetText(heartRateResponse.HeartRate.ToString());
+            txtHeartRate.SetText($"{heartRateResponse.HeartRate}");
         }
     }
 }

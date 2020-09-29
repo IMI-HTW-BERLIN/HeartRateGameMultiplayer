@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Managers;
 using PlayerBehaviour;
 using Settings;
 using UnityEngine;
@@ -19,6 +20,12 @@ namespace Pong
 
         private void Awake() => AddRandomVelocity();
 
+        /// <summary>
+        /// Handles collision.
+        /// If a wall is hit (top or bottom), entrance angle == exit angle.
+        /// If a player is hit (aka. the pong-bat), calculate new direction.
+        /// If a player goal is hit, add point and respawn.
+        /// </summary>
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag(Consts.Tags.BORDER))
@@ -29,9 +36,13 @@ namespace Pong
 
             if (other.TryGetComponent(out Player player))
             {
+                float newSpeed = speed;
+                if (GameManager.Instance.SpeedChange)
+                    newSpeed *= GameManager.Instance.GetSpeedChange(player.PlayerIndex);
+                
                 float delta = player.GetHitDelta(transform.position.y);
                 float direction = Mathf.Sign(rb.velocity.x);
-                Vector2 velocity = new Vector2((1 - Mathf.Abs(delta)) * - direction, delta).normalized * speed;
+                Vector2 velocity = new Vector2((1 - Mathf.Abs(delta)) * -direction, delta).normalized * newSpeed;
                 rb.velocity = velocity;
                 return;
             }
@@ -43,6 +54,9 @@ namespace Pong
             StartCoroutine(Respawn());
         }
 
+        /// <summary>
+        /// Respawns the pong ball in the middle and gives it a random direction.
+        /// </summary>
         private IEnumerator Respawn()
         {
             rb.velocity = Vector2.zero;
@@ -53,6 +67,9 @@ namespace Pong
             AddRandomVelocity();
         }
 
+        /// <summary>
+        /// Adds a random velocity to the pong ball.
+        /// </summary>
         private void AddRandomVelocity()
         {
             Vector2 direction = new Vector2(Random.Range(-1f, 1f),
