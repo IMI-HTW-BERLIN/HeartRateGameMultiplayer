@@ -37,7 +37,7 @@ namespace Pong
             if (other.TryGetComponent(out Player player))
             {
                 float newSpeed = speed;
-                if (GameManager.Instance.SpeedChange)
+                if (GameManager.Instance.SpeedChange && MiBandManager.Instance.ConnectedBands > player.PlayerIndex)
                     newSpeed *= GameManager.Instance.GetSpeedChange(player.PlayerIndex);
                 
                 float delta = player.GetHitDelta(transform.position.y);

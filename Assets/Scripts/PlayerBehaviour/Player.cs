@@ -40,7 +40,7 @@ namespace PlayerBehaviour
         /// </summary>
         private void Update()
         {
-            if (!GameManager.Instance.SizeChange)
+            if (!GameManager.Instance.SizeChange || MiBandManager.Instance.ConnectedBands <= playerIndex)
                 return;
 
             RectTransform rectTransform = (RectTransform) transform;
